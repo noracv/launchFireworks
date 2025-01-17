@@ -96,18 +96,12 @@
   </div>
   <script>
     const egoSwitch = document.getElementById('ego');
-    const allSwitches = document.querySelectorAll('.toggle');
+    const allSwitches = document.querySelectorAll('.toggle:not(#ego)');
 
     egoSwitch.addEventListener('change', () => {
       if (egoSwitch.checked) {
         allSwitches.forEach((toggle) => {
           toggle.checked = false;
-          toggle.style.background = 'red';
-        });
-      } else {
-        allSwitches.forEach((toggle) => {
-          toggle.checked = true;
-          toggle.style.background = 'green';
         });
       }
     });
