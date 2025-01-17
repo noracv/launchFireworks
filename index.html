@@ -1,291 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สอยดาว</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #ffccff, #99ccff);
-            font-family: 'Arial', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch UI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-        canvas {
-            display: block;
-        }
+    .container {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
 
-        #gameInfo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-        }
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
 
-        #gameInfo h1 {
-            margin: 0;
-            font-size: 1.5em;
-            color: #333;
-        }
+    label {
+      font-size: 1.2em;
+    }
 
-        #popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px 50px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            display: none;
-            z-index: 1000;
-            animation: popupAppear 0.6s ease-out, textZoom 0.8s ease-out;
-        }
+    input[type="checkbox"] {
+      appearance: none;
+      width: 40px;
+      height: 20px;
+      background: red;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.3s ease;
+    }
 
-        @keyframes popupAppear {
-            from {
-                transform: translate(-50%, -50%) scale(0.5);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
+    input[type="checkbox"]:checked {
+      background: green;
+    }
 
-        @keyframes textZoom {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+    input[type="checkbox"]::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s ease;
+    }
 
-        #popupMessage {
-            font-size: 2em;
-            font-weight: bold;
-            color: #ff6600;
-            margin: 0;
-            text-transform: uppercase;
-            animation: textZoom 1s ease-out;
-        }
-
-        #popup button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #ffcc00;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-        }
-
-        #popup button:hover {
-            background-color: #ffaa00;
-            transform: scale(1.1);
-        }
-
-        .firework {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, white, transparent);
-            border-radius: 50%;
-            animation: firework 1s ease-out forwards;
-        }
-
-        @keyframes firework {
-            from {
-                opacity: 1;
-                transform: scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: scale(3);
-            }
-        }
-    </style>
+    input[type="checkbox"]:checked::before {
+      transform: translateX(20px);
+    }
+  </style>
 </head>
 <body>
-    <canvas id="starCanvas"></canvas>
-    <div id="gameInfo">
-        <h1>สอยดาว</h1>
-        <p>รางวัลที่เหลือ: <span id="remainingRewards">250</span></p>
+  <div class="container">
+    <div class="switch-row">
+      <label>ความสำเร็จ</label>
+      <input type="checkbox" class="toggle" checked>
     </div>
-
-    <div id="popup">
-        <p id="popupMessage">คุณได้รับของรางวัล!</p>
-        <button onclick="closePopup()">ปิด</button>
+    <div class="switch-row">
+      <label>ความสุข</label>
+      <input type="checkbox" class="toggle" checked>
     </div>
+    <div class="switch-row">
+      <label>ความฉลาด</label>
+      <input type="checkbox" class="toggle" checked>
+    </div>
+    <div class="switch-row">
+      <label>โอกาส</label>
+      <input type="checkbox" class="toggle" checked>
+    </div>
+    <div class="switch-row">
+      <label>การพัฒนา</label>
+      <input type="checkbox" class="toggle" checked>
+    </div>
+    <div class="switch-row">
+      <label>อีโก้</label>
+      <input type="checkbox" id="ego" class="toggle">
+    </div>
+  </div>
+  <script>
+    const egoSwitch = document.getElementById('ego');
+    const allSwitches = document.querySelectorAll('.toggle');
 
-    <audio id="clickSound" src="https://freesound.org/data/previews/151/151022_2437358-lq.mp3"></audio>
-    <audio id="clapSound" src="https://freesound.org/data/previews/477/477256_9921001-lq.mp3"></audio>
-
-    <script>
-        const canvas = document.getElementById('starCanvas');
-        const ctx = canvas.getContext('2d');
-        const popup = document.getElementById('popup');
-        const popupMessage = document.getElementById('popupMessage');
-        const remainingRewardsElement = document.getElementById('remainingRewards');
-        const clickSound = document.getElementById('clickSound');
-        const clapSound = document.getElementById('clapSound');
-        
-        let stars = [];
-        let rewardsLeft = 250;
-
-        const rewards = [
-            { name: "ตุ๊กตา", count: 10 },
-            { name: "สมุดระบายสี", count: 15 },
-            { name: "ของเล่น", count: 20 },
-            { name: "รางวัลปลอบใจ", count: 205 },
-        ];
-
-        function getReward() {
-            for (let reward of rewards) {
-                if (reward.count > 0) {
-                    reward.count--;
-                    return reward.name;
-                }
-            }
-            return "ไม่มีรางวัลเหลือ";
-        }
-
-        class Star {
-            constructor(x, y, size, color) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.color = color;
-                this.dx = Math.random() * 4 - 2;
-                this.dy = Math.random() * 4 - 2;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                const outerRadius = this.size;
-                const innerRadius = this.size / 2;
-                const spikes = 5;
-                let rotation = Math.PI / 2 * 3;
-                let x = this.x;
-                let y = this.y;
-                const step = Math.PI / spikes;
-
-                ctx.moveTo(this.x, this.y - outerRadius);
-                for (let i = 0; i < spikes; i++) {
-                    x = this.x + Math.cos(rotation) * outerRadius;
-                    y = this.y + Math.sin(rotation) * outerRadius;
-                    ctx.lineTo(x, y);
-                    rotation += step;
-
-                    x = this.x + Math.cos(rotation) * innerRadius;
-                    y = this.y + Math.sin(rotation) * innerRadius;
-                    ctx.lineTo(x, y);
-                    rotation += step;
-                }
-                ctx.lineTo(this.x, this.y - outerRadius);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            update() {
-                this.x += this.dx;
-                this.y += this.dy;
-
-                if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
-            }
-        }
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = [];
-            createStars(rewardsLeft);
-        }
-
-        function createStars(num) {
-            for (let i = 0; i < num; i++) {
-                const size = Math.random() * 20 + 10;
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                stars.push(new Star(x, y, size, color));
-            }
-        }
-
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(star => {
-                star.draw();
-                star.update();
-            });
-        }
-
-        function showPopup(message) {
-            popupMessage.textContent = message;
-            popup.style.display = 'block';
-            clapSound.play();  // เล่นเสียงตบมือ
-            launchFireworks();  // เริ่มพลุ
-        }
-
-        function closePopup() {
-            popup.style.display = 'none';
-        }
-
-        function launchFireworks() {
-            for (let i = 0; i < 30; i++) {
-                const firework = document.createElement('div');
-                firework.classList.add('firework');
-                firework.style.left = `${Math.random() * window.innerWidth}px`;
-                firework.style.top = `${Math.random() * window.innerHeight}px`;
-                document.body.appendChild(firework);
-
-                setTimeout(() => {
-                    firework.remove();
-                }, 1000); // ลบพลุหลังจาก 1 วินาที
-            }
-        }
-
-        canvas.addEventListener('click', (e) => {
-            stars = stars.filter(star => {
-                const distance = Math.sqrt(
-                    Math.pow(e.clientX - star.x, 2) + Math.pow(e.clientY - star.y, 2)
-                );
-                if (distance < star.size && rewardsLeft > 0) {
-                    clickSound.play();
-                    rewardsLeft--;
-                    remainingRewardsElement.textContent = rewardsLeft;
-
-                    const reward = getReward();
-                    showPopup(`คุณได้รับ: ${reward}`);
-
-                    return false;
-                }
-                return true;
-            });
+    egoSwitch.addEventListener('change', () => {
+      if (egoSwitch.checked) {
+        allSwitches.forEach((toggle) => {
+          toggle.checked = false;
+          toggle.style.background = 'red';
         });
-
-        resizeCanvas();
-        createStars(250);
-
-        function animate() {
-            drawStars();
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        window.addEventListener('resize', resizeCanvas);
-    </script>
+      } else {
+        allSwitches.forEach((toggle) => {
+          toggle.checked = true;
+          toggle.style.background = 'green';
+        });
+      }
+    });
+  </script>
 </body>
 </html>
